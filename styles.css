@@ -1,0 +1,26 @@
+.table {
+    margin: 1em auto;
+}
+
+.cell {
+    height: 50px;
+    width: 50px;
+    border: 1px solid;
+    text-align: center;
+}
+
+.cell:first-child {
+    border-left: solid;
+}
+
+.cell:nth-child(3n) {
+    border-right: solid;
+}
+
+.row:first-child {
+    border-top: solid;
+}
+
+.row:nth-child(3n) td {
+    border-bottom: solid;
+}
