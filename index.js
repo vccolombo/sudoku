@@ -6,25 +6,24 @@ $(function () {
         selectCell(this);
     });
 
-    $(document).keypress(function(event) {
+    $(document).keypress(function (event) {
         if (event.key >= 1 && event.key <= 9 && !$(".selected").hasClass("value-locked")) {
             $(".selected").text(event.key);
+            checkGameFinished();
         }
     });
 });
 
 function generateNewGame() {
-    var game = new Sudoku();
-    var grid = game.grid;
+    let game = new Sudoku();
 
     for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
-            if (grid[row][col] !== 0) {
+            if (game.table[row][col] !== 0) {
                 let cell = $('.row').eq(row).children().eq(col);
-                $(cell).text(grid[row][col]);
+                $(cell).text(game.table[row][col]);
                 $(cell).addClass("value-locked");
-            }   
-            
+            }
         }
     }
 }
@@ -35,4 +34,8 @@ function unselectPreviousCell() {
 
 function selectCell(cell) {
     $(cell).addClass("selected");
+}
+
+function checkGameFinished() {
+    // Todo
 }

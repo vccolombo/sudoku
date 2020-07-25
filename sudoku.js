@@ -2,6 +2,15 @@ function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function copy2DArray(array) {
+    let newArray = [];
+    for (let i = 0; i < array.length; i++) {
+        newArray[i] = array[i].slice();
+    }
+
+    return newArray;
+}
+
 class Sudoku {
     constructor() {
         this.generateNewGame();
@@ -55,23 +64,29 @@ class Sudoku {
 
     generateNewGame() {
         let problem = getRndInteger(0, this.gamesDatabase.length);
-        this.grid = this.gamesDatabase[problem];
+        this.table = this.gamesDatabase[problem];
+        this.generateSolution();
     }
 
-    solve() {
-        let [row, col] = this.checkMissing();
+    generateSolution() {
+        this.solution = copy2DArray(this.table);
+        this.solve(this.solution);
+    }
+
+    solve(game) {
+        let [row, col] = this.checkMissing(game);
 
         if (row === -1 || col === -1) {
             return true;
         }
 
         for (let value = 1; value <= 9; value++) {
-            if (this.canInsert(row, col, value)) {
-                this.grid[row][col] = value;
-                if (this.solve()) {
+            if (this.canInsert(game, row, col, value)) {
+                game[row][col] = value;
+                if (this.solve(game)) {
                     return true;
                 } else {
-                    this.grid[row][col] = 0;
+                    game[row][col] = 0;
                 }
             }
         }
@@ -79,10 +94,10 @@ class Sudoku {
         return false;
     }
 
-    checkMissing() {
+    checkMissing(game) {
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 9; j++) {
-                if (this.grid[i][j] === 0) {
+                if (game[i][j] === 0) {
                     return [i, j];
                 }
             }
@@ -91,16 +106,16 @@ class Sudoku {
         return [-1, -1];
     }
 
-    canInsert(row, column, value) {
-        let rowSafe = this.isRowSafe(row, value);
-        let columnSafe = this.isColumnSafe(column, value);
-        let gridSafe = this.isGridSafe(row, column, value);
+    canInsert(game, row, column, value) {
+        let rowSafe = this.isRowSafe(game, row, value);
+        let columnSafe = this.isColumnSafe(game, column, value);
+        let gridSafe = this.isGridSafe(game, row, column, value);
         return rowSafe && columnSafe && gridSafe;
     }
 
-    isRowSafe(row, value) {
+    isRowSafe(game, row, value) {
         for (let column = 0; column < 9; column++) {
-            if (this.grid[row][column] === value) {
+            if (game[row][column] === value) {
                 return false;
             }
         }
@@ -108,9 +123,9 @@ class Sudoku {
         return true;
     }
 
-    isColumnSafe(column, value) {
+    isColumnSafe(game, column, value) {
         for (let row = 0; row < 9; row++) {
-            if (this.grid[row][column] === value) {
+            if (game[row][column] === value) {
                 return false;
             }
         }
@@ -118,7 +133,7 @@ class Sudoku {
         return true;
     }
 
-    isGridSafe(row, column, value) {
+    isGridSafe(game, row, column, value) {
         let rowStart = Math.floor(row / 3) * 3;
         let rowEnd = rowStart + 3;
         let columnStart = Math.floor(column / 3) * 3;
@@ -126,7 +141,7 @@ class Sudoku {
 
         for (let i = rowStart; i < rowEnd; i++) {
             for (let j = columnStart; j < columnEnd; j++) {
-                if (this.grid[i][j] === value) {
+                if (game[i][j] === value) {
                     return false;
                 }
             }
