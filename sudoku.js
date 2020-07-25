@@ -135,7 +135,3 @@ class Sudoku {
         return true;
     }
 }
-
-sudoku = new Sudoku();
-sudoku.solve();
-console.log(sudoku.grid);
