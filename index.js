@@ -8,11 +8,12 @@ $(function () {
 
     $(document).keypress(function (event) {
         let selectedCell = $(".selected");
-        let valueElement = $(".value", selectedCell)
+        let valueElement = $(".value", selectedCell);
         if (event.key >= 1 && event.key <= 9 && !valueElement.hasClass("value-locked")) {
-            valueElement.text(event.key);
+            updateCellValue(valueElement, event.key);
+
             if (checkGameFinished(game)) {
-                console.log("You Win");
+                showWinMessage();
             }
         }
     });
@@ -43,10 +44,10 @@ function selectCell(cell) {
 }
 
 function checkGameFinished(game) {
-    if (isAnyCellEmpty() || isUserGameEqualToSolution(game)) {
+    if (isAnyCellEmpty() || !isUserGameEqualToSolution(game)) {
         return false;
     }
-    
+
     return true;
 }
 
@@ -80,4 +81,12 @@ function isAnyCellEmpty() {
 
 function isEmpty(element) {
     return !$.trim(element.html())
+}
+
+function updateCellValue(cell, value) {
+    cell.text(value);
+}
+
+function showWinMessage() {
+    $(".win-container").show();
 }
