@@ -134,10 +134,10 @@ class Sudoku {
         return true;
     }
 
-    isGridSafe(game, row, column, value) {
+    isGridSafe(game, row, col, value) {
         let rowStart = Math.floor(row / 3) * 3;
         let rowEnd = rowStart + 3;
-        let columnStart = Math.floor(column / 3) * 3;
+        let columnStart = Math.floor(col / 3) * 3;
         let columnEnd = columnStart + 3;
 
         for (let i = rowStart; i < rowEnd; i++) {
