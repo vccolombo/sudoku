@@ -11,7 +11,7 @@ $(function () {
         let valueElement = $(".value", selectedCell);
         if (event.key >= 1 && event.key <= 9 && !valueElement.hasClass("value-locked")) {
             updateCellValue(valueElement, event.key);
-
+            updateInternalGameTable(game);
             if (checkGameFinished(game)) {
                 showWinMessage();
             }
@@ -24,9 +24,9 @@ function generateNewGame() {
 
     for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
-            if (game.table[row][col] !== 0) {
+            if (game.originalGame[row][col] !== 0) {
                 let cell = $(".row").eq(row).children().eq(col);
-                $(".value", cell).text(game.table[row][col]);
+                $(".value", cell).text(game.originalGame[row][col]);
                 $(".value", cell).addClass("value-locked");
             }
         }
@@ -43,48 +43,22 @@ function selectCell(cell) {
     $(cell).addClass("selected");
 }
 
-function checkGameFinished(game) {
-    if (isAnyCellEmpty() || !isUserGameEqualToSolution(game)) {
-        return false;
-    }
-
-    return true;
+function updateCellValue(cell, value) {
+    cell.text(value);
 }
 
-function isUserGameEqualToSolution(game) {
+function updateInternalGameTable(game) {
     for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
             let cell = $(".row").eq(row).children().eq(col);
             let value = $(".value", cell).text();
-            if (value != game.solution[row][col]) {
-                return false;
-            }
+            game.currGame[row][col] = value;
         }
     }
-
-    return true;
 }
 
-function isAnyCellEmpty() {
-    for (let row = 0; row < 9; row++) {
-        for (let col = 0; col < 9; col++) {
-            let cell = $(".row").eq(row).children().eq(col);
-            let valueElement = $(".value", cell)
-            if (isEmpty(valueElement)) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-function isEmpty(element) {
-    return !$.trim(element.html())
-}
-
-function updateCellValue(cell, value) {
-    cell.text(value);
+function checkGameFinished(game) {
+    return game.isCurrGameEqualToSolution();
 }
 
 function showWinMessage() {

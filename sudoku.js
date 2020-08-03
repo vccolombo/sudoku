@@ -64,12 +64,13 @@ class Sudoku {
 
     generateNewGame() {
         let problem = getRndInteger(0, this.gamesDatabase.length);
-        this.table = this.gamesDatabase[problem];
+        this.originalGame = this.gamesDatabase[problem];
+        this.currGame = copy2DArray(this.originalGame);
         this.generateSolution();
     }
 
     generateSolution() {
-        this.solution = copy2DArray(this.table);
+        this.solution = copy2DArray(this.originalGame);
         this.solve(this.solution);
     }
 
@@ -147,6 +148,18 @@ class Sudoku {
             }
         }
 
+        return true;
+    }
+
+    isCurrGameEqualToSolution() {
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                if (this.currGame[row][col] != this.solution[row][col]) {
+                    return false;
+                }
+            }
+        }
+    
         return true;
     }
 }
