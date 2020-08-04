@@ -1,5 +1,7 @@
+var timer = 0;
+
 $(function () {
-    let game = generateNewGame();
+    var game = generateNewGame();
 
     $(".cell").click(function () {
         unselectPreviousCell();
@@ -7,8 +9,8 @@ $(function () {
     });
 
     $(document).keypress(function (event) {
-        let selectedCell = $(".selected");
-        let valueElement = $(".value", selectedCell);
+        var selectedCell = $(".selected");
+        var valueElement = $(".value", selectedCell);
         if (event.key >= 1 && event.key <= 9 && !valueElement.hasClass("value-locked")) {
             updateCellValue(valueElement, event.key);
             updateInternalGameTable(game);
@@ -18,15 +20,19 @@ $(function () {
             }
         }
     });
+
+    setInterval(function () {
+        updateTimer();
+    }, 1000);
 });
 
 function generateNewGame() {
-    let game = new Sudoku();
+    var game = new Sudoku();
 
-    for (let row = 0; row < 9; row++) {
-        for (let col = 0; col < 9; col++) {
+    for (var row = 0; row < 9; row++) {
+        for (var col = 0; col < 9; col++) {
             if (game.originalGame[row][col] !== 0) {
-                let cell = $(".row").eq(row).children().eq(col);
+                var cell = $(".row").eq(row).children().eq(col);
                 $(".value", cell).text(game.originalGame[row][col]);
                 $(".value", cell).addClass("value-locked");
             }
@@ -49,20 +55,20 @@ function updateCellValue(cell, value) {
 }
 
 function updateInternalGameTable(game) {
-    for (let row = 0; row < 9; row++) {
-        for (let col = 0; col < 9; col++) {
-            let cell = $(".row").eq(row).children().eq(col);
-            let value = $(".value", cell).text();
+    for (var row = 0; row < 9; row++) {
+        for (var col = 0; col < 9; col++) {
+            var cell = $(".row").eq(row).children().eq(col);
+            var value = $(".value", cell).text();
             game.currGame[row][col] = value;
         }
     }
 }
 
 function checkAndUpdateCollisions() {
-    for (let row = 0; row < 9; row++) {
-        for (let col = 0; col < 9; col++) {
-            let cell = $(".row").eq(row).children().eq(col);
-            let value = $(".value", cell);
+    for (var row = 0; row < 9; row++) {
+        for (var col = 0; col < 9; col++) {
+            var cell = $(".row").eq(row).children().eq(col);
+            var value = $(".value", cell);
 
             if (value.text() === "" || value.hasClass("value-locked")) {
                 continue;
@@ -78,11 +84,11 @@ function checkAndUpdateCollisions() {
 }
 
 function checkAndUpdateCollisionsRow(row, col, value) {
-    for (let j = 0; j < 9; j++) {
+    for (var j = 0; j < 9; j++) {
         if (j === col) continue;
 
-        let currCell = $(".row").eq(row).children().eq(j);
-        let currValue = $(".value", currCell);
+        var currCell = $(".row").eq(row).children().eq(j);
+        var currValue = $(".value", currCell);
         if (currValue.text() === value.text()) {
             value.addClass("collision");
         }
@@ -90,11 +96,11 @@ function checkAndUpdateCollisionsRow(row, col, value) {
 }
 
 function checkAndUpdateCollisionsColumn(row, col, value) {
-    for (let i = 0; i < 9; i++) {
+    for (var i = 0; i < 9; i++) {
         if (i === row) continue;
 
-        let currCell = $(".row").eq(i).children().eq(col);
-        let currValue = $(".value", currCell);
+        var currCell = $(".row").eq(i).children().eq(col);
+        var currValue = $(".value", currCell);
         if (currValue.text() === value.text()) {
             value.addClass("collision");
         }
@@ -102,17 +108,17 @@ function checkAndUpdateCollisionsColumn(row, col, value) {
 }
 
 function checkAndUpdateCollisionsGrid(row, col, value) {
-    let rowStart = Math.floor(row / 3) * 3;
-    let rowEnd = rowStart + 3;
-    let columnStart = Math.floor(col / 3) * 3;
-    let columnEnd = columnStart + 3;
+    var rowStart = Math.floor(row / 3) * 3;
+    var rowEnd = rowStart + 3;
+    var columnStart = Math.floor(col / 3) * 3;
+    var columnEnd = columnStart + 3;
 
-    for (let i = rowStart; i < rowEnd; i++) {
-        for (let j = columnStart; j < columnEnd; j++) {
+    for (var i = rowStart; i < rowEnd; i++) {
+        for (var j = columnStart; j < columnEnd; j++) {
             if (i === row && j === col) continue;
 
-            let currCell = $(".row").eq(i).children().eq(j);
-            let currValue = $(".value", currCell);
+            var currCell = $(".row").eq(i).children().eq(j);
+            var currValue = $(".value", currCell);
             if (currValue.text() === value.text()) {
                 value.addClass("collision");
             }
@@ -127,3 +133,13 @@ function checkGameFinished(game) {
 function showWinMessage() {
     $(".win-container").show();
 }
+
+function updateTimer() {
+    timer++;
+    const minutes = Math.floor(timer / 60);
+    const seconds = timer % 60;
+    $(".timer").text(zeroPad(minutes, 2) + ":" + zeroPad(seconds, 2));
+}
+
+// https://stackoverflow.com/questions/2998784/how-to-output-numbers-with-leading-zeros-in-javascript
+const zeroPad = (num, places) => String(num).padStart(places, '0');

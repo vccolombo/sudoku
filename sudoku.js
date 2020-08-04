@@ -3,8 +3,8 @@ function getRndInteger(min, max) {
 }
 
 function copy2DArray(array) {
-    let newArray = [];
-    for (let i = 0; i < array.length; i++) {
+    var newArray = [];
+    for (var i = 0; i < array.length; i++) {
         newArray[i] = array[i].slice();
     }
 
@@ -63,7 +63,7 @@ class Sudoku {
     ];
 
     generateNewGame() {
-        let problem = getRndInteger(0, this.gamesDatabase.length);
+        var problem = getRndInteger(0, this.gamesDatabase.length);
         this.originalGame = this.gamesDatabase[problem];
         this.currGame = copy2DArray(this.originalGame);
         this.generateSolution();
@@ -75,13 +75,13 @@ class Sudoku {
     }
 
     solve(game) {
-        let [row, col] = this.checkMissing(game);
+        var [row, col] = this.checkMissing(game);
 
         if (row === -1 || col === -1) {
             return true;
         }
 
-        for (let value = 1; value <= 9; value++) {
+        for (var value = 1; value <= 9; value++) {
             if (this.canInsert(game, row, col, value)) {
                 game[row][col] = value;
                 if (this.solve(game)) {
@@ -96,8 +96,8 @@ class Sudoku {
     }
 
     checkMissing(game) {
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
+        for (var i = 0; i < 9; i++) {
+            for (var j = 0; j < 9; j++) {
                 if (game[i][j] === 0) {
                     return [i, j];
                 }
@@ -108,14 +108,14 @@ class Sudoku {
     }
 
     canInsert(game, row, column, value) {
-        let rowSafe = this.isRowSafe(game, row, value);
-        let columnSafe = this.isColumnSafe(game, column, value);
-        let gridSafe = this.isGridSafe(game, row, column, value);
+        var rowSafe = this.isRowSafe(game, row, value);
+        var columnSafe = this.isColumnSafe(game, column, value);
+        var gridSafe = this.isGridSafe(game, row, column, value);
         return rowSafe && columnSafe && gridSafe;
     }
 
     isRowSafe(game, row, value) {
-        for (let column = 0; column < 9; column++) {
+        for (var column = 0; column < 9; column++) {
             if (game[row][column] === value) {
                 return false;
             }
@@ -125,7 +125,7 @@ class Sudoku {
     }
 
     isColumnSafe(game, column, value) {
-        for (let row = 0; row < 9; row++) {
+        for (var row = 0; row < 9; row++) {
             if (game[row][column] === value) {
                 return false;
             }
@@ -135,13 +135,13 @@ class Sudoku {
     }
 
     isGridSafe(game, row, col, value) {
-        let rowStart = Math.floor(row / 3) * 3;
-        let rowEnd = rowStart + 3;
-        let columnStart = Math.floor(col / 3) * 3;
-        let columnEnd = columnStart + 3;
+        var rowStart = Math.floor(row / 3) * 3;
+        var rowEnd = rowStart + 3;
+        var columnStart = Math.floor(col / 3) * 3;
+        var columnEnd = columnStart + 3;
 
-        for (let i = rowStart; i < rowEnd; i++) {
-            for (let j = columnStart; j < columnEnd; j++) {
+        for (var i = rowStart; i < rowEnd; i++) {
+            for (var j = columnStart; j < columnEnd; j++) {
                 if (game[i][j] === value) {
                     return false;
                 }
@@ -152,8 +152,8 @@ class Sudoku {
     }
 
     isCurrGameEqualToSolution() {
-        for (let row = 0; row < 9; row++) {
-            for (let col = 0; col < 9; col++) {
+        for (var row = 0; row < 9; row++) {
+            for (var col = 0; col < 9; col++) {
                 if (this.currGame[row][col] != this.solution[row][col]) {
                     return false;
                 }
